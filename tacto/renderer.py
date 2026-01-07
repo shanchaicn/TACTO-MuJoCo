@@ -21,7 +21,15 @@ Default is pyglet, which requires active window
 import os
 import threading
 
-os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+# IMPORTANT:
+# Do NOT force a PyOpenGL platform when a display is available. Let pyrender pick
+# its default backend (pyglet/GLX), which is generally the most compatible on desktops.
+# Only force a headless backend when no display is present.
+#
+# You can always override explicitly via:
+#   export PYOPENGL_PLATFORM=osmesa|egl|glx|x11|...
+if "PYOPENGL_PLATFORM" not in os.environ and not os.environ.get("DISPLAY"):
+    os.environ["PYOPENGL_PLATFORM"] = "osmesa"
 # os.environ["EGL_DEVICE_ID"] = "0"
 
 import logging
